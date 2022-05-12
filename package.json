@@ -1,0 +1,30 @@
+{
+  "devDependencies": {
+    "phaser": "^3.60.0-beta.4"
+  },
+  "name": "phaser3-uv-mapping",
+  "description": "Repo for the opensourced uv mapping based on https://www.youtube.com/watch?v=HsOKwUwL1bE",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "dependencies": {
+    "eventemitter3": "^4.0.7"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KingCosmic/phaser3-uv-mapping.git"
+  },
+  "keywords": [
+    "phaser3",
+    "uv",
+    "mapping"
+  ],
+  "author": "KingCosmic <cosmic@bardsballad.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/KingCosmic/phaser3-uv-mapping/issues"
+  },
+  "homepage": "https://github.com/KingCosmic/phaser3-uv-mapping#readme"
+}
