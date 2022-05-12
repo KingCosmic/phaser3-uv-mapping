@@ -4,7 +4,7 @@
   },
   "name": "phaser3-uv-mapping",
   "description": "Repo for the opensourced uv mapping based on https://www.youtube.com/watch?v=HsOKwUwL1bE",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "./dist/index.js",
   "dependencies": {
     "eventemitter3": "^4.0.7"
