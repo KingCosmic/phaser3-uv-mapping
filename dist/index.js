@@ -22,7 +22,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * @author      Austyn Studdard <cosmic@bardsballad.com>
  */
 var phaser_1 = __importDefault(require("phaser"));
-var fragShader = "\n#define SHADER_NAME COLOR_SWAP\n\nprecision highp int;\nprecision highp float;\n\nuniform sampler2D uMainSampler;\nuniform sampler2D uSecondarySampler;\nuniform float uvSize;\nuniform vec2 uResolution;\n\nvarying vec2 outTexCoord;\n\nvoid main ()\n{\n  vec4 imgColor = texture2D(uMainSampler,  outTexCoord);\n\n  vec2 pos = (imgColor.rg * 255.0) / uvSize;\n\n  gl_FragColor = texture2D(uSecondarySampler, pos);\n  gl_FragColor.a = imgColor.a;\n}\n";
+var fragShader = "\n#define SHADER_NAME COLOR_SWAP\n\nprecision highp int;\nprecision highp float;\n\nuniform sampler2D uMainSampler;\nuniform sampler2D uSecondarySampler;\nuniform float uvWidth;\nuniform float uvHeight;\nuniform vec2 uResolution;\n\nvarying vec2 outTexCoord;\n\nvoid main ()\n{\n  vec4 imgColor = texture2D(uMainSampler,  outTexCoord);\n\n  vec2 pos = vec2((imgColor.r * 255.0) / uvWidth, (imgColor.g * 255.0) / uvHeight);\n\n  gl_FragColor = texture2D(uSecondarySampler, pos);\n  gl_FragColor.a = imgColor.a;\n}\n";
 var UVPipeline = /** @class */ (function (_super) {
     __extends(UVPipeline, _super);
     function UVPipeline(game, texture) {
@@ -30,7 +30,8 @@ var UVPipeline = /** @class */ (function (_super) {
             game: game,
             fragShader: fragShader
         }) || this;
-        _this.uvSize = 15;
+        _this.uvWidth = 15;
+        _this.uvHeight = 15;
         _this.texture = texture;
         _this.changeDefaultUVTexture(_this.texture);
         return _this;
@@ -46,7 +47,8 @@ var UVPipeline = /** @class */ (function (_super) {
         var renderer = this.renderer;
         this.set1i('uMainSampler', 0);
         this.set1i('uSecondarySampler', 1);
-        this.set1f('uvSize', this.uvSize);
+        this.set1f('uvWidth', this.uvWidth);
+        this.set1f('uvHeight', this.uvHeight);
         renderer.popFramebuffer(false, false, false);
         if (!renderer.currentFramebuffer) {
             gl.viewport(0, 0, renderer.width, renderer.height);
@@ -95,15 +97,11 @@ var UVPipeline = /** @class */ (function (_super) {
     };
     UVPipeline.prototype.onDrawSprite = function (gameObject, target) {
         // @ts-ignore
-        if (!gameObject.lookupTexture)
-            return this.glTexture = this.defaultTexture;
+        this.glTexture = gameObject.lookupTexture || this.defaultTexture;
         // @ts-ignore
-        if (!gameObject.uvSize)
-            return this.uvSize = 15;
+        this.uvWidth = gameObject.uvWidth || 15;
         // @ts-ignore
-        this.glTexture = gameObject.lookupTexture;
-        // @ts-ignore
-        this.uvSize = gameObject.uvSize;
+        this.uvHeight = gameObject.uvHeight || this.uvWidth;
     };
     return UVPipeline;
 }(phaser_1.default.Renderer.WebGL.Pipelines.SpriteFXPipeline));
