@@ -21,7 +21,7 @@ void main ()
 {
   vec4 imgColor = texture2D(uMainSampler,  outTexCoord);
 
-  vec2 pos = vec2((imgColor.r * 255.0) / uvWidth, (imgColor.g * 255.0) / uvHeight);
+  vec2 pos = (imgColor.rg * 255.0) / 255.0;
 
   gl_FragColor = texture2D(uSecondarySampler, pos);
   gl_FragColor.a = imgColor.a;
@@ -33,8 +33,8 @@ class UVPipeline extends Phaser.Renderer.WebGL.Pipelines.SpriteFXPipeline {
   texture:string;
   glTexture!:WebGLTexture;
   defaultTexture!:WebGLTexture;
-  uvWidth:number = 15;
-  uvHeight:number = 15;
+  uvWidth:number = 15.0;
+  uvHeight:number = 15.0;
 
   constructor(game:Phaser.Game, texture:string) {
 
@@ -61,8 +61,6 @@ class UVPipeline extends Phaser.Renderer.WebGL.Pipelines.SpriteFXPipeline {
 
     this.set1i('uMainSampler', 0);
     this.set1i('uSecondarySampler', 1);
-    this.set1f('uvWidth', this.uvWidth);
-    this.set1f('uvHeight', this.uvHeight);
 
     renderer.popFramebuffer(false, false, false);
 
