@@ -55,83 +55,79 @@ class UVPipeline extends Phaser.Renderer.WebGL.Pipelines.SpriteFXPipeline {
     }
   }
 
-  bindAndDraw(source: Phaser.Renderer.WebGL.RenderTarget) {
-    var gl = this.gl;
-    var renderer = this.renderer;
+  // bindAndDraw(source: Phaser.Renderer.WebGL.RenderTarget) {
+  //   var gl = this.gl;
+  //   var renderer = this.renderer;
 
-    this.set1i('uMainSampler', 0);
-    this.set1i('uSecondarySampler', 1);
+  //   this.set1i('uMainSampler', 0);
+  //   this.set1i('uSecondarySampler', 1);
 
-    renderer.popFramebuffer(false, false, false);
+  //   renderer.popFramebuffer(false, false, false);
 
-    if (!renderer.currentFramebuffer)
-    {
-      gl.viewport(0, 0, renderer.width, renderer.height);
-    }
+  //   if (!renderer.currentFramebuffer)
+  //   {
+  //     gl.viewport(0, 0, renderer.width, renderer.height);
+  //   }
 
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, source.texture);
+  //   gl.activeTexture(gl.TEXTURE0);
+  //   gl.bindTexture(gl.TEXTURE_2D, source.texture);
 
-    gl.activeTexture(gl.TEXTURE1)
-    gl.bindTexture(gl.TEXTURE_2D, this.glTexture);
+  //   gl.activeTexture(gl.TEXTURE1)
+  //   gl.bindTexture(gl.TEXTURE_2D, this.glTexture);
 
-    // @ts-ignore
-    var matrix = this._tempMatrix1.loadIdentity();
+  //   // @ts-ignore
+  //   var matrix = this._tempMatrix1.loadIdentity();
 
-    // @ts-ignore
-    var x = this.targetBounds.x;
-    // @ts-ignore
-    var y = this.targetBounds.y;
+  //   // @ts-ignore
+  //   var x = this.targetBounds.x;
+  //   // @ts-ignore
+  //   var y = this.targetBounds.y;
 
-    var xw = x + source.width;
-    var yh = y + source.height;
+  //   var xw = x + source.width;
+  //   var yh = y + source.height;
 
-    var x0 = matrix.getX(x, y);
-    var x1 = matrix.getX(x, yh);
-    var x2 = matrix.getX(xw, yh);
-    var x3 = matrix.getX(xw, y);
+  //   var x0 = matrix.getX(x, y);
+  //   var x1 = matrix.getX(x, yh);
+  //   var x2 = matrix.getX(xw, yh);
+  //   var x3 = matrix.getX(xw, y);
 
-    //  Regular verts
-    var y0 = matrix.getY(x, y);
-    var y1 = matrix.getY(x, yh);
-    var y2 = matrix.getY(xw, yh);
-    var y3 = matrix.getY(xw, y);
+  //   //  Regular verts
+  //   var y0 = matrix.getY(x, y);
+  //   var y1 = matrix.getY(x, yh);
+  //   var y2 = matrix.getY(xw, yh);
+  //   var y3 = matrix.getY(xw, y);
 
-    //  Flip verts:
-    // var y0 = matrix.getY(x, yh);
-    // var y1 = matrix.getY(x, y);
-    // var y2 = matrix.getY(xw, y);
-    // var y3 = matrix.getY(xw, yh);
+  //   //  Flip verts:
+  //   // var y0 = matrix.getY(x, yh);
+  //   // var y1 = matrix.getY(x, y);
+  //   // var y2 = matrix.getY(xw, y);
+  //   // var y3 = matrix.getY(xw, yh);
 
-    this.batchVert(x0, y0, 0, 0, 0, 0, 0xffffff);
-    this.batchVert(x1, y1, 0, 1, 0, 0, 0xffffff);
-    this.batchVert(x2, y2, 1, 1, 0, 0, 0xffffff);
-    this.batchVert(x0, y0, 0, 0, 0, 0, 0xffffff);
-    this.batchVert(x2, y2, 1, 1, 0, 0, 0xffffff);
-    this.batchVert(x3, y3, 1, 0, 0, 0, 0xffffff);
+  //   this.batchVert(x0, y0, 0, 0, 0, 0, 0xffffff);
+  //   this.batchVert(x1, y1, 0, 1, 0, 0, 0xffffff);
+  //   this.batchVert(x2, y2, 1, 1, 0, 0, 0xffffff);
+  //   this.batchVert(x0, y0, 0, 0, 0, 0, 0xffffff);
+  //   this.batchVert(x2, y2, 1, 1, 0, 0, 0xffffff);
+  //   this.batchVert(x3, y3, 1, 0, 0, 0, 0xffffff);
 
-    this.flush();
+  //   this.flush();
 
-    renderer.resetTextures();
+  //   renderer.resetTextures();
 
-    // No hanging references
-    // @ts-ignore
-    this.tempSprite = null;
-  }
-
-  onPreRender() {}
-
-  onDraw(target: Phaser.Renderer.WebGL.RenderTarget) {
-    this.drawToGame(target);
-  }
+  //   // No hanging references
+  //   // @ts-ignore
+  //   this.tempSprite = null;
+  // }
 
   onDrawSprite(gameObject: Phaser.GameObjects.Sprite, target: Phaser.Renderer.WebGL.RenderTarget): void {
     // @ts-ignore
     this.glTexture = gameObject.lookupTexture || this.defaultTexture;
-    // @ts-ignore
-    this.uvWidth = gameObject.uvWidth || 15;
-    // @ts-ignore
-    this.uvHeight = gameObject.uvHeight || this.uvWidth;
+    // // @ts-ignore
+    // this.uvWidth = gameObject.uvWidth || 15;
+    // // @ts-ignore
+    // this.uvHeight = gameObject.uvHeight || this.uvWidth;
+
+    this.set1i('uSecondarySampler', 1);
   }
 }
 
