@@ -22,7 +22,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * @author      Austyn Studdard <cosmic@bardsballad.com>
  */
 var phaser_1 = __importDefault(require("phaser"));
-var fragShader = "\n #define SHADER_NAME COLOR_SWAP\n \n precision highp int;\n precision highp float;\n \n uniform sampler2D uMainSampler;\n uniform sampler2D uSecondarySampler;\n uniform vec2 uResolution;\n \n varying vec2 outTexCoord;\n \n void main ()\n {\n   vec4 imgColor = texture2D(uMainSampler,  outTexCoord);\n \n   vec2 pos = (imgColor.rg * 255.0) / 15.0;\n \n   gl_FragColor = texture2D(uSecondarySampler, pos);\n   gl_FragColor.a = imgColor.a;\n }\n ";
+var fragShader = "\n#define SHADER_NAME COLOR_SWAP\n\nprecision highp int;\nprecision highp float;\n\nuniform sampler2D uMainSampler;\nuniform sampler2D uSecondarySampler;\nuniform float uvSize;\nuniform vec2 uResolution;\n\nvarying vec2 outTexCoord;\n\nvoid main ()\n{\n  vec4 imgColor = texture2D(uMainSampler,  outTexCoord);\n\n  vec2 pos = (imgColor.rg * 255.0) / uvSize;\n\n  gl_FragColor = texture2D(uSecondarySampler, pos);\n  gl_FragColor.a = imgColor.a;\n}\n";
 var UVPipeline = /** @class */ (function (_super) {
     __extends(UVPipeline, _super);
     function UVPipeline(game, texture) {
@@ -30,6 +30,7 @@ var UVPipeline = /** @class */ (function (_super) {
             game: game,
             fragShader: fragShader
         }) || this;
+        _this.uvSize = 15;
         _this.texture = texture;
         _this.changeDefaultUVTexture(_this.texture);
         return _this;
@@ -45,6 +46,7 @@ var UVPipeline = /** @class */ (function (_super) {
         var renderer = this.renderer;
         this.set1i('uMainSampler', 0);
         this.set1i('uSecondarySampler', 1);
+        this.set1f('uvSize', this.uvSize);
         renderer.popFramebuffer(false, false, false);
         if (!renderer.currentFramebuffer) {
             gl.viewport(0, 0, renderer.width, renderer.height);
@@ -96,7 +98,12 @@ var UVPipeline = /** @class */ (function (_super) {
         if (!gameObject.lookupTexture)
             return this.glTexture = this.defaultTexture;
         // @ts-ignore
+        if (!gameObject.uvSize)
+            return this.uvSize = 15;
+        // @ts-ignore
         this.glTexture = gameObject.lookupTexture;
+        // @ts-ignore
+        this.uvSize = gameObject.uvSize;
     };
     return UVPipeline;
 }(phaser_1.default.Renderer.WebGL.Pipelines.SpriteFXPipeline));

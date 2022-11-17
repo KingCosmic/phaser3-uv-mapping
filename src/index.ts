@@ -11,6 +11,7 @@ precision highp float;
 
 uniform sampler2D uMainSampler;
 uniform sampler2D uSecondarySampler;
+uniform float uvSize;
 uniform vec2 uResolution;
 
 varying vec2 outTexCoord;
@@ -19,7 +20,7 @@ void main ()
 {
   vec4 imgColor = texture2D(uMainSampler,  outTexCoord);
 
-  vec2 pos = (imgColor.rg * 255.0) / 15.0;
+  vec2 pos = (imgColor.rg * 255.0) / uvSize;
 
   gl_FragColor = texture2D(uSecondarySampler, pos);
   gl_FragColor.a = imgColor.a;
@@ -28,23 +29,24 @@ void main ()
 
 class UVPipeline extends Phaser.Renderer.WebGL.Pipelines.SpriteFXPipeline {
 
-  texture:string
-  glTexture!:WebGLTexture
-  defaultTexture!:WebGLTexture
+  texture:string;
+  glTexture!:WebGLTexture;
+  defaultTexture!:WebGLTexture;
+  uvSize:number = 15;
 
   constructor(game:Phaser.Game, texture:string) {
 
     super({
       game,
       fragShader
-    })
+    });
 
-    this.texture = texture
-    this.changeDefaultUVTexture(this.texture)
+    this.texture = texture;
+    this.changeDefaultUVTexture(this.texture);
   }
 
   changeDefaultUVTexture(texture:string) {
-    const phaserTexture = this.game.textures.getFrame(texture)
+    const phaserTexture = this.game.textures.getFrame(texture);
 
     if (phaserTexture) {
       this.defaultTexture = phaserTexture.glTexture;
@@ -57,6 +59,7 @@ class UVPipeline extends Phaser.Renderer.WebGL.Pipelines.SpriteFXPipeline {
 
     this.set1i('uMainSampler', 0);
     this.set1i('uSecondarySampler', 1);
+    this.set1f('uvSize', this.uvSize);
 
     renderer.popFramebuffer(false, false, false);
 
@@ -66,10 +69,10 @@ class UVPipeline extends Phaser.Renderer.WebGL.Pipelines.SpriteFXPipeline {
     }
 
     gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, source.texture)
+    gl.bindTexture(gl.TEXTURE_2D, source.texture);
 
     gl.activeTexture(gl.TEXTURE1)
-    gl.bindTexture(gl.TEXTURE_2D, this.glTexture)
+    gl.bindTexture(gl.TEXTURE_2D, this.glTexture);
 
     // @ts-ignore
     var matrix = this._tempMatrix1.loadIdentity();
@@ -118,15 +121,19 @@ class UVPipeline extends Phaser.Renderer.WebGL.Pipelines.SpriteFXPipeline {
   onPreRender() {}
 
   onDraw(target: Phaser.Renderer.WebGL.RenderTarget) {
-    this.drawToGame(target)
+    this.drawToGame(target);
   }
 
   onDrawSprite(gameObject: Phaser.GameObjects.Sprite, target: Phaser.Renderer.WebGL.RenderTarget): void {
     // @ts-ignore
-    if (!gameObject.lookupTexture) return this.glTexture = this.defaultTexture
+    if (!gameObject.lookupTexture) return this.glTexture = this.defaultTexture;
+    // @ts-ignore
+    if (!gameObject.uvSize) return this.uvSize = 15;
 
     // @ts-ignore
-    this.glTexture = gameObject.lookupTexture
+    this.glTexture = gameObject.lookupTexture;
+    // @ts-ignore
+    this.uvSize = gameObject.uvSize;
   }
 }
 
