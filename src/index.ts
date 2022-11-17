@@ -11,7 +11,8 @@ precision highp float;
 
 uniform sampler2D uMainSampler;
 uniform sampler2D uSecondarySampler;
-uniform float uvSize;
+uniform float uvWidth;
+uniform float uvHeight;
 uniform vec2 uResolution;
 
 varying vec2 outTexCoord;
@@ -20,7 +21,7 @@ void main ()
 {
   vec4 imgColor = texture2D(uMainSampler,  outTexCoord);
 
-  vec2 pos = (imgColor.rg * 255.0) / uvSize;
+  vec2 pos = vec2((imgColor.r * 255.0) / uvWidth, (imgColor.g * 255.0) / uvHeight);
 
   gl_FragColor = texture2D(uSecondarySampler, pos);
   gl_FragColor.a = imgColor.a;
@@ -32,7 +33,8 @@ class UVPipeline extends Phaser.Renderer.WebGL.Pipelines.SpriteFXPipeline {
   texture:string;
   glTexture!:WebGLTexture;
   defaultTexture!:WebGLTexture;
-  uvSize:number = 15;
+  uvWidth:number = 15;
+  uvHeight:number = 15;
 
   constructor(game:Phaser.Game, texture:string) {
 
@@ -59,7 +61,8 @@ class UVPipeline extends Phaser.Renderer.WebGL.Pipelines.SpriteFXPipeline {
 
     this.set1i('uMainSampler', 0);
     this.set1i('uSecondarySampler', 1);
-    this.set1f('uvSize', this.uvSize);
+    this.set1f('uvWidth', this.uvWidth);
+    this.set1f('uvHeight', this.uvHeight);
 
     renderer.popFramebuffer(false, false, false);
 
@@ -126,14 +129,11 @@ class UVPipeline extends Phaser.Renderer.WebGL.Pipelines.SpriteFXPipeline {
 
   onDrawSprite(gameObject: Phaser.GameObjects.Sprite, target: Phaser.Renderer.WebGL.RenderTarget): void {
     // @ts-ignore
-    if (!gameObject.lookupTexture) return this.glTexture = this.defaultTexture;
+    this.glTexture = gameObject.lookupTexture || this.defaultTexture;
     // @ts-ignore
-    if (!gameObject.uvSize) return this.uvSize = 15;
-
+    this.uvWidth = gameObject.uvWidth || 15;
     // @ts-ignore
-    this.glTexture = gameObject.lookupTexture;
-    // @ts-ignore
-    this.uvSize = gameObject.uvSize;
+    this.uvHeight = gameObject.uvHeight || this.uvWidth;
   }
 }
 
